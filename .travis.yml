@@ -1,66 +1,35 @@
 language: python
 python:
-  - "3.7"
-
+- '3.7'
 services:
-  - docker
-
-env:  # N times sandboxes created and built by jobs
+- docker
+env:
   global:
-    - GOLOOP_GIT=https://github.com/icon-project/goloop
-
+  - GOLOOP_GIT=https://github.com/icon-project/goloop
+  - TAG_VERSION=0.9
+  - secure: hf0xIHtxALX4V5T2ZixhnjIgEXH44ybgUaq3EjCHVvghbg/FtV7bYcuIalcSRsZdd2HYMcuwQXrSWHMlzZxpWega/uVJqZKt4qfsowPUxzzWDCnCFlexsEb8GVnIHlG1XYvrsd3YNML6hOtmE8M5A2zJ4tQ76RsizAxAzLVB5P1SwC/llY0pwCnSwvxXso6Pt9M0XOEXQwafVo47J5u86u8oC2mOVEXM26zXnBHUUQnIYmAIKP9E+ut1CZKG1YiJ0LqpH+vXOkvVrhJax0obKat+8Ucl9JB6rZWxN0jeg1c0pjcg6YVdv/1yWpsmycyki/GTKRjMzlWzXmpJfgvbMxYy/QVOPQJrprrJDUhs2d41JPkwTIlY7/e4P87X47bITrl2UcOybP2x337VAlLIvkMtgvxyMCvS1axj1Ad7pQh9XzkTKe16twtHdLWgFLIsePLN1nGnH5Ty7EPMAONUQgtYSZuxDMHlqrN84dEvtw0jNm4C4MAv7tKnVRSYrzHUXtzpxBXmASkNiBrsIOYRhagvdKJjZqrwvLQpy0pRA0SOqpQr8yqT91FtMQuO6PWFMeYcNrZ9PVDFloECAHH5iWrKApLqDrs57/itLagSeJYUcmvWIkC1uaA5Mk3xilGt+e2XG7IhZoF+2XYuMdHqZfHxwChhEWSzleTEXuhW4Fc=
+  - secure: fFYWLkCFDSc6am27Hj8eMoY+8erpO0mcCJMD89zX460CLk2RIpRiZc0Le++2eHDR6bjwkF8V3NBh03kazpQcXVQk3aeEIVnc1caBpebeg8XE+EzSi6S6bTFKhnHu9xpxjb+LosTUj0UZ5/J7tNPdbM/l5NDSnkEu4nI1xgt7lcGgIrtsTbYljtBJJjn3PJpsEg0U3fpmkVYd7QUZq0F4BjKnq1vka+u+WwvHkTzrfCAu+xBr30sy8Hsi6IxK7hcmRufsoF+4NzZSVZuM0iKJUdeLQB+nKDCg51OwyGnNEbTcNM5pjChP4mMJosOI2A2mG2UJf5UagyEsJROXH2cjlIeIIJmLKC7DMBO3dxPnjO8oj6CVNEcvNJC5tVgRAMSju8PoxrxJN0TyGktNU1JxxRh8sNdQ0xufXy6Pa0EiWeiK/MSiiCz7oHYJVq/vqBwQJkXx/NmcV8KPdNtMooPk5dVbb5Ek2qXvteszxrDCSjCG90gOEQQoiLdzlNe/SBTG0IvB71lgxUNIoTaKyrVWH95rvP63DETT+jelwfNJphT67tIiBUEr3J9K4D67nTaO7lAA3QHQ/rxXowDhSIGiJvVDxrOi+/WpyGyyqPKkX8hVuoeMKsLp8/TBdfIZI4xyKiJ6aTfKRt/NnWmropUy5umkbNe6RexKnR4rBVrKhrI=
 jobs:
   include:
-    - os: linux
-      arch: amd64
-
-#    - os: linux
-#      arch: amd64
-#      env: IS_STATIC_BUILD="false"
-
+  - os: linux
+    arch: amd64
 branches:
   only:
-    - master
-
-
+  - master
 before_install:
-  - curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
-  - >
-    scversion="stable" # or "v0.4.7", or "latest"
-    wget -qO- "https://storage.googleapis.com/shellcheck/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv
-    cp "shellcheck-${scversion}/shellcheck" /usr/local/bin/
-    shellcheck --version
-  - git clone $GOLOOP_GIT
+- curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+  && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64
+  /usr/local/bin/container-structure-test
+- 'scversion="stable" # or "v0.4.7", or "latest" wget -qO- "https://storage.googleapis.com/shellcheck/shellcheck-${scversion?}.linux.x86_64.tar.xz"
+  | tar -xJv cp "shellcheck-${scversion}/shellcheck" /usr/local/bin/ shellcheck --version
+
+'
+- git clone $GOLOOP_GIT
 install:
-  - cd goloop
-  - make goloop-image
-#  - >
-#    docker run -d --rm -p 9000:9000
-#    -e CREP_ROOT_HASH=$CREP_ROOT_HASH
-#    -e LOG_OUTPUT_TYPE="console"
-#    -e IS_AUTOGEN_CERT="true"
-#    --name prep-node iconloop/prep-node:$(make version)
-#script:
-#  - docker ps -a
-#  - |
-#    NEXT_WAIT_TIME=0
-#    until curl $CURL_OPTION localhost:9000/api/v1/status/peer || [ $NEXT_WAIT_TIME -eq $WAIT_RETRY ];
-#    do
-#      echo " retry count -> ${NEXT_WAIT_TIME}"
-#      NEXT_WAIT_TIME=$(( NEXT_WAIT_TIME+1 ));
-#      sleep 1;
-#    done
-#  - sleep 40
-#  - docker ps -a
-#  - peer_status=$(curl $CURL_OPTION http://localhost:9000/api/v1/status/peer)
-#  - echo $peer_status | jq
-#  - block_height=$(echo $peer_status | jq .block_height)
-#  - |
-#    if [[ "${block_height}" -gt 0 ]];then
-#      echo "syncing .. $block_height"
-#    else
-#      echo "something wrong"
-#      docker logs prep-node
-#      exit 1
-#    fi
-#after_failure: docker logs prep-node
+- cd goloop
+- git branch -D $TAG_VERSION
+- make goloop-image
+script:
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- docker tag goloop $DOCKER_USER/goloop:$TAG_VERSION
+- docker push $DOCKER_USER/goloop:$TAG_VERSION
