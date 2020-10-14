@@ -33,3 +33,4 @@ script:
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
 - docker tag goloop $DOCKER_USER/goloop:$TAG_VERSION
 - docker push $DOCKER_USER/goloop:$TAG_VERSION
+- docker push $DOCKER_USER/goloop:latest
