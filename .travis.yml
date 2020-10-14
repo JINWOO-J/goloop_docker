@@ -1,0 +1,66 @@
+language: python
+python:
+  - "3.7"
+
+services:
+  - docker
+
+env:  # N times sandboxes created and built by jobs
+  global:
+    - GOLOOP_GIT=https://github.com/icon-project/goloop
+
+jobs:
+  include:
+    - os: linux
+      arch: amd64
+
+#    - os: linux
+#      arch: amd64
+#      env: IS_STATIC_BUILD="false"
+
+branches:
+  only:
+    - master
+    - devel
+
+before_install:
+  - curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+  - >
+    scversion="stable" # or "v0.4.7", or "latest"
+    wget -qO- "https://storage.googleapis.com/shellcheck/shellcheck-${scversion?}.linux.x86_64.tar.xz" | tar -xJv
+    cp "shellcheck-${scversion}/shellcheck" /usr/local/bin/
+    shellcheck --version
+    git clone $GOLOOP_GIT
+install:
+  - cd goloop
+  - make goloop-image
+#  - >
+#    docker run -d --rm -p 9000:9000
+#    -e CREP_ROOT_HASH=$CREP_ROOT_HASH
+#    -e LOG_OUTPUT_TYPE="console"
+#    -e IS_AUTOGEN_CERT="true"
+#    --name prep-node iconloop/prep-node:$(make version)
+#script:
+#  - docker ps -a
+#  - |
+#    NEXT_WAIT_TIME=0
+#    until curl $CURL_OPTION localhost:9000/api/v1/status/peer || [ $NEXT_WAIT_TIME -eq $WAIT_RETRY ];
+#    do
+#      echo " retry count -> ${NEXT_WAIT_TIME}"
+#      NEXT_WAIT_TIME=$(( NEXT_WAIT_TIME+1 ));
+#      sleep 1;
+#    done
+#  - sleep 40
+#  - docker ps -a
+#  - peer_status=$(curl $CURL_OPTION http://localhost:9000/api/v1/status/peer)
+#  - echo $peer_status | jq
+#  - block_height=$(echo $peer_status | jq .block_height)
+#  - |
+#    if [[ "${block_height}" -gt 0 ]];then
+#      echo "syncing .. $block_height"
+#    else
+#      echo "something wrong"
+#      docker logs prep-node
+#      exit 1
+#    fi
+#after_failure: docker logs prep-node
