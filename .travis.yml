@@ -27,7 +27,7 @@ before_install:
 - git clone $GOLOOP_GIT
 install:
 - cd goloop
-- git branch -D $TAG_VERSION
+- git branch $TAG_VERSION
 - make goloop-image
 script:
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
