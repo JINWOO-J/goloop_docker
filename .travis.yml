@@ -14,9 +14,9 @@ jobs:
   - os: linux
     arch: amd64
     env: goloop_type="goloop"
-  - os: linux
-    arch: amd64
-    env: goloop_type="gochain-icon"
+#  - os: linux
+#    arch: amd64
+#    env: goloop_type="gochain-icon"
 
 branches:
   only:
