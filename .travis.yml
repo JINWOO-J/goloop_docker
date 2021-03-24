@@ -13,6 +13,11 @@ jobs:
   include:
   - os: linux
     arch: amd64
+    env: goloop_type="goloop"
+  - os: linux
+    arch: amd64
+    env: goloop_type="gochain-icon"
+
 branches:
   only:
   - master
@@ -29,10 +34,10 @@ before_install:
 install:
 - cd goloop
 - git checkout $GOLOOP_GIT_TAG
-- make goloop-image
+- make ${goloop_type}-image
 script:
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
-- docker tag goloop $DOCKER_USER/goloop:$TAG_NAME
-- docker tag goloop $DOCKER_USER/goloop:latest
-- docker push $DOCKER_USER/goloop:$TAG_NAME
-- docker push $DOCKER_USER/goloop:latest
+- docker tag goloop $DOCKER_USER/${goloop_type}:$TAG_NAME
+- docker tag goloop $DOCKER_USER/${goloop_type}:latest
+- docker push $DOCKER_USER/${goloop_type}:$TAG_NAME
+- docker push $DOCKER_USER/${goloop_type}:latest
