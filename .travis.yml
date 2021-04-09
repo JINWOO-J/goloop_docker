@@ -34,7 +34,7 @@ before_install:
 install:
 - cd goloop
 - git checkout $GOLOOP_GIT_TAG
-- make ${goloop_type}-image
+- make ${goloop_type}-icon-image
 script:
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
 - docker tag goloop $DOCKER_USER/${goloop_type}:$TAG_NAME
