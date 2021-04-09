@@ -38,7 +38,7 @@ install:
 - make ${goloop_type}-image
 script:
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
-- docker tag goloop $DOCKER_USER/${goloop_type}:$TAG_NAME
-- docker tag goloop $DOCKER_USER/${goloop_type}:latest
+- docker tag ${goloop_type} $DOCKER_USER/${goloop_type}:$TAG_NAME
+- docker tag ${goloop_type} $DOCKER_USER/${goloop_type}:latest
 - docker push $DOCKER_USER/${goloop_type}:$TAG_NAME
 - docker push $DOCKER_USER/${goloop_type}:latest
